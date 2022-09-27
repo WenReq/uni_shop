@@ -20,7 +20,7 @@
 		  </view>
 		  <!-- 列表区域 -->
 		  <view class="history-list">
-		    <uni-tag :text="item" v-for="(item, i) in historys" :key="i"></uni-tag>
+		    <uni-tag :text="item" v-for="(item, i) in historys" :key="i" @click="gotoGoodsList(item)"></uni-tag>
 		  </view>
 		</view>
 	</view>
@@ -100,7 +100,12 @@
 			  this.historyList = []
 			  // 清空本地存储中记录的搜索历史
 			  uni.setStorageSync('kw', '[]')
-			}
+			},
+			gotoGoodsList(kw) {
+				uni.navigateTo({
+					url: '/subpkg/goods_list/goods_list?query=' + kw
+				})
+			},
 		}
 	}
 </script>
