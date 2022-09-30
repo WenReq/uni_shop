@@ -21,7 +21,7 @@
 				</view>
 			</view>
 			<!-- 运费 -->
-			<view class="yf">快递：免运费</view>
+			<view class="yf">快递：免运费 -- {{cart.length}}</view>
 		</view>
 		<!-- 商品详情信息 -->
 		<rich-text :nodes="goods_info.goods_introduce"></rich-text>
@@ -39,6 +39,12 @@
 </template>
 
 <script>
+	// 从 vuex 中按需导出 mapState 辅助函数
+	// 按需导入 mapMutations 这个辅助方法
+	import {
+		mapState,
+		mapMutations
+	} from 'vuex'
 	export default {
 		data() {
 			return {
@@ -66,11 +72,19 @@
 				]
 			};
 		},
+		computed: {
+			// 调用 mapState 方法，把 m_cart 模块中的 cart 数组映射到当前页面中，作为计算属性来使用
+			// ...mapState('模块的名称', ['要映射的数据名称1', '要映射的数据名称2'])
+			...mapState('m_cart', ['cart'])
+			// 注意：今后无论映射 mutations 方法，还是 getters 属性，还是 state 中的数据，都需要指定模块的名称，才能进行映射。
+		},
 		onLoad(options) {
 			const goods_id = options.goods_id
 			this.getGoodsDetail(goods_id)
 		},
 		methods: {
+			// 把 m_cart 模块中的 addToCart 方法映射到当前页面使用
+			...mapMutations('m_cart', ['addToCart']),
 			async getGoodsDetail(goods_id) {
 				const {
 					data: res
@@ -96,7 +110,6 @@
 			},
 			// 左侧按钮的点击事件处理函数
 			onClick(e) {
-				debugger
 				if (e.content.text === '购物车') {
 					// 切换到购物车页面
 					uni.switchTab({
@@ -106,13 +119,19 @@
 			},
 			// 右侧按钮的点击事件处理函数
 			buttonClick(e) {
-				debugger
-				console.log(e)
+				// 判断是否点击了 加入购物车 按钮
 				if (e.content.text === '加入购物车') {
-					// 切换到购物车页面
-					uni.switchTab({
-						url: '/pages/cart/cart'
-					})
+					// 组织一个商品的信息对象
+					const goods = {
+						goods_id: this.goods_info.goods_id, // 商品的Id
+						goods_name: this.goods_info.goods_name, // 商品的名称
+						goods_price: this.goods_info.goods_price, // 商品的价格
+						goods_count: 1, // 商品的数量
+						goods_small_logo: this.goods_info.goods_small_logo, // 商品的图片
+						goods_state: true // 商品的勾选状态
+					}
+					// 通过 this 调用映射过来的 addToCart 方法，把商品信息对象存储到购物车中
+					this.addToCart(goods)
 				}
 			}
 		}
