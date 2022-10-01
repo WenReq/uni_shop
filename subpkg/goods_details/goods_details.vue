@@ -21,7 +21,7 @@
 				</view>
 			</view>
 			<!-- 运费 -->
-			<view class="yf">快递：免运费 -- {{cart.length}}</view>
+			<view class="yf">快递：免运费</view>
 		</view>
 		<!-- 商品详情信息 -->
 		<rich-text :nodes="goods_info.goods_introduce"></rich-text>
@@ -45,7 +45,11 @@
 		mapState,
 		mapMutations
 	} from 'vuex'
+	// 导入自己封装的 mixin 模块
+	import badgeMix from '@/mixins/tabbar-badge.js'
 	export default {
+		// 将 badgeMix 混入到当前的页面中进行使用
+		mixins: [badgeMix],
 		data() {
 			return {
 				goods_info: [],
@@ -72,10 +76,23 @@
 				]
 			};
 		},
+		watch: {
+			total: {
+				// handler 属性用来定义侦听器的 function 处理函数
+				handler(newVal) {
+					const findResult = this.options.find(x => x.text === '购物车')
+					if (findResult) {
+						findResult.info = newVal
+					}
+				},
+				// immediate 属性用来声明此侦听器，是否在页面初次加载完毕后立即调用
+				immediate: true
+			},
+		},
 		computed: {
 			// 调用 mapState 方法，把 m_cart 模块中的 cart 数组映射到当前页面中，作为计算属性来使用
 			// ...mapState('模块的名称', ['要映射的数据名称1', '要映射的数据名称2'])
-			...mapState('m_cart', ['cart'])
+			...mapState('m_cart', ['cart']),
 			// 注意：今后无论映射 mutations 方法，还是 getters 属性，还是 state 中的数据，都需要指定模块的名称，才能进行映射。
 		},
 		onLoad(options) {
