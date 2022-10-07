@@ -23,7 +23,6 @@
 	}, {
 		"path": "pages/my/my",
 		"style": {
-			"navigationBarTitleText": "我的信息",
 			"enablePullDownRefresh": false
 		}
 
