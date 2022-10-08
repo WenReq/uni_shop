@@ -1,5 +1,5 @@
 <template>
-	<view>
+	<view class="my-container">
 		<!-- 用户未登录时，显示登录组件 -->
 		<my-login v-if="!token"></my-login>
 
@@ -31,5 +31,8 @@
 </script>
 
 <style lang="scss">
-
+page,
+.my-container {
+  height: 100%;
+}
 </style>
